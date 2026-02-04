@@ -33,4 +33,4 @@ This project was engineered using the following technologies:
 4.  **Prediction:** Outputs a risk probability using a Random Forest Classifier.
 
 ---
-*Created by Muhammad Ahmed for [Byte 2 Beat (Hack4Health 2026)]*
+*Created by Muhammad Ahmed for the Byte 2 Beat Hackathon (Hack4Health 2026).*

@@ -5,7 +5,7 @@
 ## 🚀 Try it Out
 Click the badge below to run the full pipeline in your browser using Google Colab's free GPU.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/YOUR_USERNAME/Myo-AI/blob/main/Myo_AI.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/4hmed-n/Myo-AI/blob/main/Myo_AI.ipynb)
 
 *Note: Because this project processes large medical datasets, the initial data download (handled automatically by the script) may take 1-2 minutes.*
 
@@ -33,4 +33,4 @@ This project was engineered using the following technologies:
 4.  **Prediction:** Outputs a risk probability using a Random Forest Classifier.
 
 ---
-*Created by Muhammad Ahmed for [Hackathon Name]*
+*Created by Muhammad Ahmed for [Byte 2 Beat]*

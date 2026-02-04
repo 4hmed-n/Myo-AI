@@ -1,4 +1,4 @@
-# Myo AI: Precision Cardiac Diagnostics 🫀
+# Myo AI: Precision Cardiac Diagnostics
 
 **Myo AI** is a multimodal machine learning pipeline that fuses clinical patient history with high-dimensional ECG signal data to predict cardiovascular risk with high sensitivity.
 

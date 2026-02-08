@@ -17,11 +17,39 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 
 ### 🧬 The Chronos Time-Travel Dashboard
 *An interactive "Digital Twin" simulator that projects patient risk over the next 20 years.*
-![Myo-Sim Dashboard](https://github.com/4hmed-n/Myo-AI/blob/main/assets/dashboard_preview.png?raw=true)
+![Myo-Sim Dashboard](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Patient%20Simulator%20UI.png?raw=true)
 
 ### 🔍 The Oracle Layer (Explainability)
-*Granular SHAP force plots explaining exactly why a patient was flagged.*
-![SHAP Visualization](https://github.com/4hmed-n/Myo-AI/blob/main/assets/shap_preview.png?raw=true)
+*Granular SHAP waterfall plots explaining exactly why a specific patient was flagged.*
+![SHAP Waterfall](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Waterfall%20SHAP.png?raw=true)
+
+---
+
+## 📊 Performance & Validation
+
+### Tournament Leaderboard (ROC-AUC)
+*The system compares 5 models simultaneously. The tree-based ensembles (RF & HGB) dominated the Deep Learning CNN.*
+![ROC Curve](https://github.com/4hmed-n/Myo-AI/blob/main/assets/ROC-AUC.png?raw=true)
+
+### Confusion Matrix Grid
+*Visualizing the classification fidelity of all contestants.*
+![Confusion Matrix](https://github.com/4hmed-n/Myo-AI/blob/main/assets/CF.png?raw=true)
+
+### Unsupervised Risk Stratification (The Zenith Map)
+*PCA + K-Means clustering identifying distinct "Risk Phenotypes" (Low/Medium/High) entirely unsupervised. This proves the model is finding real patterns, not just memorizing labels.*
+![Zenith Map](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Scatter%20Plot.png?raw=true)
+
+---
+
+## 🧠 Feature Intelligence
+
+### Global Risk Drivers (Beeswarm Plot)
+*Shows the directionality of risk. High Blood Pressure (Red) pushes risk to the right (positive), while Physical Activity (Blue) lowers it.*
+![Beeswarm Plot](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Beeswarm%20SHAP.png?raw=true)
+
+### Permutation Importance
+*Ranking features by how much the model degrades when they are shuffled. Systolic BP (`ap_hi`) is the #1 predictor.*
+![Permutation Importance](https://github.com/4hmed-n/Myo-AI/blob/main/assets/PI%20Plot.png?raw=true)
 
 ---
 
@@ -40,31 +68,7 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 ### **Intelligence & UI**
 * **SHAP (Oracle Layer):** Game-theoretic feature explainability.
 * **IPyWidgets (Bio-Deck):** Interactive real-time risk simulation.
-* **Matplotlib & Seaborn:** Diagnostic visualizations (ROC Curves, Confusion Matrices).
-
----
-
-## 🧠 System Architecture
-
-Myo AI operates on a vertically scalable **3-Layer Stack**:
-
-### **Layer 1: The Foundation (Data Engineering)**
-* **Synapse Ingestion Engine:** Harmonizes 4 disparate datasets into a massive cohort of **140,918** patients.
-* **Pulse Harmonization Engine:** A streaming algorithm that processes **600MB+** of raw ECG waveforms in memory-efficient chunks to extract physiological fingerprints.
-* **Catalyst Feature Synthesizer:** Fuses clinical vitals with signal data, engineering biomarkers like *Pulse Pressure* and *BMI* while handling sensor missingness.
-
-### **Layer 2: The Tournament (Model Selection)**
-Five fully independent KDD pipelines compete in a stratified validation environment. The system automatically selects the champion based on ROC-AUC performance:
-1.  🛡️ **Aegis Protocol:** Random Forest Classifier
-2.  ⚡ **Myo-Core Engine:** Histogram Gradient Boosting
-3.  👁️ **Sentinel Node:** Gaussian Naive Bayes
-4.  🛡️ **Vanguard System:** Logistic Regression
-5.  💓 **Pulse-Sync:** 1D-Convolutional Neural Network (Deep Learning)
-
-### **Layer 3: The Intelligence (Analysis)**
-* **Oracle Layer:** Explains "Black Box" decisions using SHAP values.
-* **Zenith Map:** Unsupervised clustering (PCA + K-Means) to find hidden patient risk phenotypes.
-* **Chronos Engine:** A predictive simulator for longitudinal risk projection.
+* **Matplotlib & Seaborn:** Diagnostic visualizations.
 
 ---
 
@@ -78,8 +82,6 @@ The system evaluated all candidates on a held-out test set of **28,184 patients*
 | 🥉 | Pulse-Sync (1D-CNN) | 73.19% | 0.7949 | Deep Learning |
 | 4 | Vanguard System (LogReg) | 72.21% | 0.7758 | Baseline |
 | 5 | Sentinel Node (Naive Bayes) | 50.41% | 0.5075 | Baseline |
-
-*Key Insight: The **Aegis Protocol** demonstrated that robust ensemble methods can outperform complex Deep Learning architectures on structured clinical data, achieving the highest sensitivity with significantly lower training overhead.*
 
 ---
 

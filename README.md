@@ -7,7 +7,7 @@
 ## 🚀 Try it Out
 Click the badge below to run the full pipeline, witness the model tournament, and interact with the **Bio-Deck Dashboard** directly in your browser using Google Colab's free GPU.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/4hmed-n/Myo-AI/blob/main/Myo_AI.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/4hmed-n/Myo-AI/blob/main/Myo%20AI.ipynb)
 
 *Note: The system automatically ingests and harmonizes over 600MB of medical data. Initial setup may take 1-2 minutes.*
 
@@ -18,12 +18,10 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 ### 🧬 The Chronos Time-Travel Dashboard
 *An interactive "Digital Twin" simulator that projects patient risk over the next 20 years.*
 ![Myo-Sim Dashboard](https://github.com/4hmed-n/Myo-AI/blob/main/assets/dashboard_preview.png?raw=true)
-*(Replace the link above with your actual screenshot of the dashboard)*
 
 ### 🔍 The Oracle Layer (Explainability)
 *Granular SHAP force plots explaining exactly why a patient was flagged.*
 ![SHAP Visualization](https://github.com/4hmed-n/Myo-AI/blob/main/assets/shap_preview.png?raw=true)
-*(Replace with your SHAP screenshot)*
 
 ---
 

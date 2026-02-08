@@ -1,4 +1,4 @@
-# 🫀 Myo AI: A Multimodal Fusion Framework for Cardiovascular Risk Stratification
+# Myo AI: A Multimodal Fusion Framework for Cardiovascular Risk Stratification
 
 > **Byte 2 Beat Hackathon (Hack4Health 2026) — Technical Track Submission**
 

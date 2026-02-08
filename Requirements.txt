@@ -1,0 +1,13 @@
+pandas
+numpy
+scikit-learn
+scipy
+shap
+matplotlib
+seaborn
+gdown
+tensorflow
+joblib
+ipywidgets
+streamlit
+pyngrok

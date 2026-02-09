@@ -13,7 +13,7 @@ try:
     model = joblib.load('myocore_pipeline.pkl')
     st.success("System Online: Neural Link Established")
 except FileNotFoundError:
-    st.error("⚠️ Model file not found! Please upload 'myocore_pipeline.pkl' to GitHub.")
+    st.error("⚠️ Model file not found! Please upload 'myocore_pipeline.pkl'.")
     st.stop()
 
 # 3. Sidebar Inputs
@@ -22,96 +22,89 @@ st.sidebar.header("Patient Vitals")
 # --- Clinical Features ---
 age = st.sidebar.slider("Age (Years)", 20, 100, 50)
 gender_opt = st.sidebar.radio("Sex", ["Male", "Female"])
-sex_val = 1 if gender_opt == "Male" else 0
-
-# Match both naming conventions (sex vs gender) just in case
-gender_val = 2 if gender_opt == "Male" else 1 
+sex = 1 if gender_opt == "Male" else 0
 
 cp = st.sidebar.selectbox("Chest Pain Type", [0, 1, 2, 3], index=0)
 trestbps = st.sidebar.slider("Resting BP (mm Hg)", 90, 200, 120)
 chol = st.sidebar.slider("Cholesterol (mg/dl)", 100, 600, 250)
 
 fbs_opt = st.sidebar.radio("Fasting BS > 120 mg/dl?", ["No", "Yes"])
-fbs_val = 1 if fbs_opt == "Yes" else 0
+fbs = 1 if fbs_opt == "Yes" else 0
 
 restecg = st.sidebar.selectbox("Resting ECG Results", [0, 1, 2], index=0)
 thalachh = st.sidebar.slider("Max Heart Rate", 60, 220, 150)
 
 exng_opt = st.sidebar.radio("Exercise Induced Angina?", ["No", "Yes"])
-exng_val = 1 if exng_opt == "Yes" else 0
+exng = 1 if exng_opt == "Yes" else 0
 
 oldpeak = st.sidebar.slider("ST Depression", 0.0, 6.0, 1.0)
 slp = st.sidebar.selectbox("Slope", [0, 1, 2], index=1)
 caa = st.sidebar.slider("Major Vessels (0-4)", 0, 4, 0)
 thall = st.sidebar.selectbox("Thalassemia", [0, 1, 2, 3], index=2)
 
-# --- Lifestyle Features (For the Fusion part) ---
+# --- Lifestyle Features ---
 st.sidebar.markdown("---")
 st.sidebar.header("Lifestyle & Physical")
 height = st.sidebar.slider("Height (cm)", 100, 220, 170)
 weight = st.sidebar.slider("Weight (kg)", 30, 150, 75)
-
-# Calculate BMI automatically
 bmi = weight / ((height/100)**2)
 
 smoke = st.sidebar.checkbox("Smoker?")
 alco = st.sidebar.checkbox("Alcohol Intake?")
 active = st.sidebar.checkbox("Physically Active?")
 
-# --- ECG Signal Features (HIDDEN DEFAULTS) ---
-# The model needs these, but users can't type them. We use "Normal" defaults.
-# (You can make these sliders if you really want, but defaults are safer for a demo)
-ecg_mean = 0.0  
-ecg_std = 1.0   
-ecg_skew = 0.0  
-ecg_kurtosis = 3.0 # Normal distribution kurtosis
-
 # 4. Run Simulation
 if st.button("Run Simulation"):
-    # We construct a DataFrame with EVERY POSSIBLE COLUMN the model might want.
-    # We include duplicates (e.g. 'fbs' and 'fastingbs') to catch all naming variations.
+    
+    # Calculate derived features that the model expects
+    pulse_pressure = trestbps - 80  # Systolic - Diastolic (using 80 as default diastolic)
+    sensor_signal_available = 1     # Default: signal is available
+    
+    # Build input DataFrame with EXACT column names the model expects
+    # Based on your error: model expects 'ca', not 'caa', and 'exang', not 'exng'
     input_data = pd.DataFrame({
-        # Dataset 1 Features (Heart Disease)
+        # Core features (using standard UCI Cleveland naming)
         'age': [age],
-        'sex': [sex_val],
+        'sex': [sex],
         'cp': [cp],
         'trestbps': [trestbps],
         'chol': [chol],
-        'fbs': [fbs_val],
+        'fbs': [fbs],
         'restecg': [restecg],
-        'thalachh': [thalachh],
-        'exng': [exng_val],
+        'thalach': [thalachh],      # Note: model expects 'thalach', not 'thalachh'
+        'exang': [exng],            # Changed from 'exng' to 'exang'
         'oldpeak': [oldpeak],
-        'slp': [slp],
-        'caa': [caa],
-        'thall': [thall],
+        'slope': [slp],             # Changed from 'slp' to 'slope'
+        'ca': [caa],                # Changed from 'caa' to 'ca'
+        'thal': [thall],            # Changed from 'thall' to 'thal'
         
-        # Dataset 2 Features (Cardio Disease)
-        'gender': [gender_val],
-        'height': [height],
-        'weight': [weight],
-        'ap_hi': [trestbps], # Map Systolic BP here
-        'ap_lo': [80],       # Default Diastolic if not asked
-        'cholesterol': [1 if chol < 200 else 2], # Map numeric chol to categorical
-        'gluc': [1 if fbs_val == 0 else 2],      # Map fbs to gluc
+        # Additional features the model expects (from your error message)
+        'pulse_pressure': [pulse_pressure],
+        'sensor_signal_available': [sensor_signal_available],
+        
+        # Lifestyle features
+        'bmi': [bmi],
         'smoke': [1 if smoke else 0],
         'alco': [1 if alco else 0],
         'active': [1 if active else 0],
-        'bmi': [bmi],
-
-        # Dataset 3 Features (The missing ones from your error!)
-        'fastingbs': [fbs_val],   # The error specifically asked for this name
-        'restingbp': [trestbps],  # Another common name for BP
-        'maxhr': [thalachh],      # Another common name for Heart Rate
-        
-        # ECG Signal Features (The other missing ones!)
-        'ecg_mean': [ecg_mean],
-        'ecg_std': [ecg_std],
-        'ecg_skew': [ecg_skew],
-        'ecg_kurtosis': [ecg_kurtosis]
     })
 
+    # DEBUG: Show what columns the model actually expects (uncomment if needed)
+    # if hasattr(model, 'feature_names_in_'):
+    #     st.write("Model expects:", list(model.feature_names_in_))
+    #     st.write("You provided:", list(input_data.columns))
+    #     st.write("Missing:", set(model.feature_names_in_) - set(input_data.columns))
+    #     st.write("Extra:", set(input_data.columns) - set(model.feature_names_in_))
+
     try:
+        # Ensure column order matches training data
+        if hasattr(model, 'feature_names_in_'):
+            # Reorder columns to match exactly what model was trained on
+            # Only keep columns that exist in both
+            expected_cols = list(model.feature_names_in_)
+            available_cols = [col for col in expected_cols if col in input_data.columns]
+            input_data = input_data[available_cols]
+        
         # Prediction
         prediction = model.predict(input_data)[0]
         probability = model.predict_proba(input_data)[0][1]
@@ -131,6 +124,13 @@ if st.button("Run Simulation"):
                 
     except Exception as e:
         st.error(f"Error: {e}")
-        # This will print the EXACT list of columns the model is still missing (if any)
+        # Debug info
         if hasattr(model, 'feature_names_in_'):
-            st.write("Columns still missing:", set(model.feature_names_in_) - set(input_data.columns))
+            st.write("Model expects:", list(model.feature_names_in_))
+            st.write("You provided:", list(input_data.columns))
+            missing = set(model.feature_names_in_) - set(input_data.columns)
+            extra = set(input_data.columns) - set(model.feature_names_in_)
+            if missing:
+                st.error(f"Missing columns: {missing}")
+            if extra:
+                st.warning(f"Extra columns (will be ignored): {extra}")

@@ -14,7 +14,7 @@ try:
     st.success("System Online: Neural Link Established")
 except Exception as e:
     st.error(f"Error loading model: {e}")
-    st.info("Ensure requirements.txt has 'scikit-learn>=1.6.0'")
+    st.info("Check your requirements.txt for 'scikit-learn>=1.6.0'")
     st.stop()
 
 # 3. Sidebar Inputs
@@ -46,7 +46,7 @@ active = 1 if st.sidebar.checkbox("Physically Active?") else 0
 
 # 4. Run Simulation
 if st.button("Run Simulation"):
-    # The order must be EXACTly as your model was fit
+    # The order must be EXACTLY as your model was trained
     columns = [
         'age', 'restingbp', 'cholesterol', 'fastingbs', 'maxhr', 'oldpeak', 'heartdisease',
         'age', 'gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc',
@@ -55,7 +55,7 @@ if st.button("Run Simulation"):
     ]
     
     row = [
-        age, restingbp, chol_cat, fastingbs, maxhr, oldpeak, 0, # heartdisease=0
+        age, restingbp, chol_cat, fastingbs, maxhr, oldpeak, 0, # heartdisease placeholder
         age, gender, height, weight, ap_hi, ap_lo, chol_cat, gluc,
         smoke, alco, active, 0.0, 1.0, 0.0, 3.0, # ECG defaults
         1, bmi, (ap_hi - ap_lo) # pulse_pressure

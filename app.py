@@ -6,7 +6,7 @@ import numpy as np
 # 1. Page Setup
 st.set_page_config(page_title="Myo AI Simulator", layout="centered")
 st.title("🫀 Myo AI: Cardiovascular Risk Simulator")
-st.caption("Powered by Myo-Core Engine")
+st.caption("Powered by Myo-Core Engine (Fusion Model)")
 
 # 2. Load the Model
 try:
@@ -16,62 +16,99 @@ except FileNotFoundError:
     st.error("⚠️ Model file not found! Please upload 'myocore_pipeline.pkl' to GitHub.")
     st.stop()
 
-# 3. Sidebar Inputs (MATCHING YOUR DATASET EXACTLY)
+# 3. Sidebar Inputs
 st.sidebar.header("Patient Vitals")
 
-# Age (Input in years, converted to days if model needs it, but usually years)
-age_years = st.sidebar.slider("Age (Years)", 20, 100, 50)
-age = age_years # Assuming model uses years. If trained on days, change to: age_years * 365
+# --- Clinical Features ---
+age = st.sidebar.slider("Age (Years)", 20, 100, 50)
+gender_opt = st.sidebar.radio("Sex", ["Male", "Female"])
+sex_val = 1 if gender_opt == "Male" else 0
 
-# Gender
-gender_option = st.sidebar.radio("Gender", ["Female", "Male"])
-gender = 2 if gender_option == "Male" else 1  # 1: Female, 2: Male (Common coding for this dataset)
+# Match both naming conventions (sex vs gender) just in case
+gender_val = 2 if gender_opt == "Male" else 1 
 
-# Physical Traits (needed for BMI)
+cp = st.sidebar.selectbox("Chest Pain Type", [0, 1, 2, 3], index=0)
+trestbps = st.sidebar.slider("Resting BP (mm Hg)", 90, 200, 120)
+chol = st.sidebar.slider("Cholesterol (mg/dl)", 100, 600, 250)
+
+fbs_opt = st.sidebar.radio("Fasting BS > 120 mg/dl?", ["No", "Yes"])
+fbs_val = 1 if fbs_opt == "Yes" else 0
+
+restecg = st.sidebar.selectbox("Resting ECG Results", [0, 1, 2], index=0)
+thalachh = st.sidebar.slider("Max Heart Rate", 60, 220, 150)
+
+exng_opt = st.sidebar.radio("Exercise Induced Angina?", ["No", "Yes"])
+exng_val = 1 if exng_opt == "Yes" else 0
+
+oldpeak = st.sidebar.slider("ST Depression", 0.0, 6.0, 1.0)
+slp = st.sidebar.selectbox("Slope", [0, 1, 2], index=1)
+caa = st.sidebar.slider("Major Vessels (0-4)", 0, 4, 0)
+thall = st.sidebar.selectbox("Thalassemia", [0, 1, 2, 3], index=2)
+
+# --- Lifestyle Features (For the Fusion part) ---
+st.sidebar.markdown("---")
+st.sidebar.header("Lifestyle & Physical")
 height = st.sidebar.slider("Height (cm)", 100, 220, 170)
 weight = st.sidebar.slider("Weight (kg)", 30, 150, 75)
 
-# Blood Pressure
-ap_hi = st.sidebar.slider("Systolic BP (ap_hi)", 90, 220, 120)
-ap_lo = st.sidebar.slider("Diastolic BP (ap_lo)", 60, 140, 80)
+# Calculate BMI automatically
+bmi = weight / ((height/100)**2)
 
-# Lab Results
-chol_option = st.sidebar.selectbox("Cholesterol", ["Normal", "Above Normal", "Well Above Normal"])
-cholesterol = 1 if chol_option == "Normal" else (2 if chol_option == "Above Normal" else 3)
-
-gluc_option = st.sidebar.selectbox("Glucose", ["Normal", "Above Normal", "Well Above Normal"])
-gluc = 1 if gluc_option == "Normal" else (2 if gluc_option == "Above Normal" else 3)
-
-# Lifestyle
 smoke = st.sidebar.checkbox("Smoker?")
 alco = st.sidebar.checkbox("Alcohol Intake?")
 active = st.sidebar.checkbox("Physically Active?")
 
-# Convert booleans to 0/1
-smoke_val = 1 if smoke else 0
-alco_val = 1 if alco else 0
-active_val = 1 if active else 0
+# --- ECG Signal Features (HIDDEN DEFAULTS) ---
+# The model needs these, but users can't type them. We use "Normal" defaults.
+# (You can make these sliders if you really want, but defaults are safer for a demo)
+ecg_mean = 0.0  
+ecg_std = 1.0   
+ecg_skew = 0.0  
+ecg_kurtosis = 3.0 # Normal distribution kurtosis
 
-# 4. Feature Engineering (Calculating BMI)
-# Your error showed 'bmi' is missing, so we must calculate it!
-bmi = weight / ((height / 100) ** 2)
-
-# 5. Prediction Logic
+# 4. Run Simulation
 if st.button("Run Simulation"):
-    # Create DataFrame with EXACT column names from your error message
+    # We construct a DataFrame with EVERY POSSIBLE COLUMN the model might want.
+    # We include duplicates (e.g. 'fbs' and 'fastingbs') to catch all naming variations.
     input_data = pd.DataFrame({
+        # Dataset 1 Features (Heart Disease)
         'age': [age],
-        'gender': [gender],
+        'sex': [sex_val],
+        'cp': [cp],
+        'trestbps': [trestbps],
+        'chol': [chol],
+        'fbs': [fbs_val],
+        'restecg': [restecg],
+        'thalachh': [thalachh],
+        'exng': [exng_val],
+        'oldpeak': [oldpeak],
+        'slp': [slp],
+        'caa': [caa],
+        'thall': [thall],
+        
+        # Dataset 2 Features (Cardio Disease)
+        'gender': [gender_val],
         'height': [height],
         'weight': [weight],
-        'ap_hi': [ap_hi],
-        'ap_lo': [ap_lo],
-        'cholesterol': [cholesterol],
-        'gluc': [gluc],
-        'smoke': [smoke_val],
-        'alco': [alco_val],
-        'active': [active_val],
-        'bmi': [bmi]  # The engineered feature
+        'ap_hi': [trestbps], # Map Systolic BP here
+        'ap_lo': [80],       # Default Diastolic if not asked
+        'cholesterol': [1 if chol < 200 else 2], # Map numeric chol to categorical
+        'gluc': [1 if fbs_val == 0 else 2],      # Map fbs to gluc
+        'smoke': [1 if smoke else 0],
+        'alco': [1 if alco else 0],
+        'active': [1 if active else 0],
+        'bmi': [bmi],
+
+        # Dataset 3 Features (The missing ones from your error!)
+        'fastingbs': [fbs_val],   # The error specifically asked for this name
+        'restingbp': [trestbps],  # Another common name for BP
+        'maxhr': [thalachh],      # Another common name for Heart Rate
+        
+        # ECG Signal Features (The other missing ones!)
+        'ecg_mean': [ecg_mean],
+        'ecg_std': [ecg_std],
+        'ecg_skew': [ecg_skew],
+        'ecg_kurtosis': [ecg_kurtosis]
     })
 
     try:
@@ -79,13 +116,12 @@ if st.button("Run Simulation"):
         prediction = model.predict(input_data)[0]
         probability = model.predict_proba(input_data)[0][1]
 
-        # Display
         st.subheader("Analysis Results")
         col1, col2 = st.columns(2)
         
         with col1:
             st.metric(label="Risk Probability", value=f"{probability*100:.1f}%")
-            st.caption(f"Calculated BMI: {bmi:.1f}")
+            st.caption(f"Patient BMI: {bmi:.1f}")
         
         with col2:
             if probability > 0.5:
@@ -95,4 +131,6 @@ if st.button("Run Simulation"):
                 
     except Exception as e:
         st.error(f"Error: {e}")
-        st.write("Debug - Your model expects these columns:", model.feature_names_in_)
+        # This will print the EXACT list of columns the model is still missing (if any)
+        if hasattr(model, 'feature_names_in_'):
+            st.write("Columns still missing:", set(model.feature_names_in_) - set(input_data.columns))

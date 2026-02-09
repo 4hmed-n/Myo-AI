@@ -14,19 +14,17 @@ try:
     st.success("System Online: Neural Link Established")
 except Exception as e:
     st.error(f"Error loading model: {e}")
+    st.info("Ensure requirements.txt has 'scikit-learn>=1.6.0'")
     st.stop()
 
 # 3. Sidebar Inputs
 st.sidebar.header("Patient Vitals")
-
-# Clinical
 age = st.sidebar.slider("Age (Years)", 20, 100, 50)
 gender_opt = st.sidebar.radio("Sex", ["Male", "Female"])
 gender = 2 if gender_opt == "Male" else 1
 
 restingbp = st.sidebar.slider("Resting BP (Systolic)", 90, 200, 120)
-ap_hi = restingbp
-ap_lo = st.sidebar.slider("Diastolic BP", 50, 130, 80)
+ap_hi, ap_lo = restingbp, st.sidebar.slider("Diastolic BP", 50, 130, 80)
 
 chol = st.sidebar.slider("Cholesterol (mg/dl)", 100, 600, 250)
 chol_cat = 1 if chol < 200 else (2 if chol < 240 else 3)
@@ -38,20 +36,17 @@ gluc = 1 if fastingbs == 0 else 2
 maxhr = st.sidebar.slider("Max Heart Rate", 60, 220, 150)
 oldpeak = st.sidebar.slider("ST Depression", 0.0, 6.0, 1.0)
 
-# Physical
+# Physical Traits
 height = st.sidebar.slider("Height (cm)", 100, 220, 170)
 weight = st.sidebar.slider("Weight (kg)", 30, 150, 75)
 bmi = weight / ((height/100)**2)
-smoke = st.sidebar.checkbox("Smoker?")
-alco = st.sidebar.checkbox("Alcohol Intake?")
-active = st.sidebar.checkbox("Physically Active?")
+smoke = 1 if st.sidebar.checkbox("Smoker?") else 0
+alco = 1 if st.sidebar.checkbox("Alcohol Intake?") else 0
+active = 1 if st.sidebar.checkbox("Physically Active?") else 0
 
 # 4. Run Simulation
 if st.button("Run Simulation"):
-    pulse_pressure = ap_hi - ap_lo
-    heartdisease = 0 
-    
-    # EXACT order from your debug log
+    # The order must be EXACTly as your model was fit
     columns = [
         'age', 'restingbp', 'cholesterol', 'fastingbs', 'maxhr', 'oldpeak', 'heartdisease',
         'age', 'gender', 'height', 'weight', 'ap_hi', 'ap_lo', 'cholesterol', 'gluc',
@@ -60,10 +55,10 @@ if st.button("Run Simulation"):
     ]
     
     row = [
-        age, restingbp, chol_cat, fastingbs, maxhr, oldpeak, heartdisease,
+        age, restingbp, chol_cat, fastingbs, maxhr, oldpeak, 0, # heartdisease=0
         age, gender, height, weight, ap_hi, ap_lo, chol_cat, gluc,
-        int(smoke), int(alco), int(active), 0.0, 1.0, 0.0, 3.0, # Defaults for ECG
-        1, bmi, pulse_pressure
+        smoke, alco, active, 0.0, 1.0, 0.0, 3.0, # ECG defaults
+        1, bmi, (ap_hi - ap_lo) # pulse_pressure
     ]
     
     input_df = pd.DataFrame([row], columns=columns)
@@ -77,6 +72,5 @@ if st.button("Run Simulation"):
         else:
             st.success("✅ LOW RISK")
         st.progress(float(prob))
-            
     except Exception as e:
         st.error(f"Prediction Error: {e}")

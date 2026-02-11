@@ -70,11 +70,17 @@ with tab1:
     exng_val = 1 if exng == "Yes" else 0
     cp_val = {"Typical Angina": 0, "Atypical Angina": 1, "Non-anginal Pain": 2, "Asymptomatic": 3}[cp]
 
-    input_data = pd.DataFrame({
+
+    # Build input_data with all possible features
+    input_dict = {
         'age': [age], 'sex': [sex_val], 'cp': [cp_val], 'trtbps': [trtbps],
         'chol': [chol], 'fbs': [0], 'restecg': [1], 'thalachh': [thalachh],
         'exng': [exng_val], 'oldpeak': [oldpeak], 'slp': [1], 'caa': [caa], 'thall': [thall]
-    })
+    }
+    input_data = pd.DataFrame(input_dict)
+    # Reorder columns to match model if possible
+    if model is not None and hasattr(model, 'feature_names_in_'):
+        input_data = input_data[model.feature_names_in_]
 
     if st.button("🚀 RUN SIMULATION"):
         if model:

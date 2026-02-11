@@ -78,8 +78,11 @@ with tab1:
         'exng': [exng_val], 'oldpeak': [oldpeak], 'slp': [1], 'caa': [caa], 'thall': [thall]
     }
     input_data = pd.DataFrame(input_dict)
-    # Reorder columns to match model if possible
+    # Align columns to model's expected features, fill missing with 0, ignore extras
     if model is not None and hasattr(model, 'feature_names_in_'):
+        for col in model.feature_names_in_:
+            if col not in input_data.columns:
+                input_data[col] = 0  # Default value for missing features
         input_data = input_data[model.feature_names_in_]
 
     if st.button("🚀 RUN SIMULATION"):

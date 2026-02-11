@@ -78,18 +78,22 @@ with tab1:
         'exng': [exng_val], 'oldpeak': [oldpeak], 'slp': [1], 'caa': [caa], 'thall': [thall]
     }
     input_data = pd.DataFrame(input_dict)
-    # Align columns to model's expected features, fill missing with 0, ignore extras
+    # Align columns to model's expected features, fill missing with 0, drop extras
     if model is not None and hasattr(model, 'feature_names_in_'):
         for col in model.feature_names_in_:
             if col not in input_data.columns:
                 input_data[col] = 0  # Default value for missing features
-        input_data = input_data[model.feature_names_in_]
+        # Drop any extra columns not in model
+        input_data = input_data[[col for col in model.feature_names_in_]]
 
     if st.button("🚀 RUN SIMULATION"):
         if model:
-            # Predict
-            prediction = model.predict(input_data)[0]
-            probability = model.predict_proba(input_data)[0][1] * 100
+            try:
+                prediction = model.predict(input_data)[0]
+                probability = model.predict_proba(input_data)[0][1] * 100
+            except Exception as e:
+                st.error(f"Prediction error: {e}. Please check your model and input features.")
+                st.stop()
 
             # Display Big Gauge
             st.markdown(f"<h1 style='text-align: center; color: #00adb5; font-size: 80px;'>{probability:.1f}%</h1>", unsafe_allow_html=True)
@@ -127,7 +131,17 @@ with tab2:
         for a in ages:
             test_data = input_data.copy()
             test_data['age'] = a
-            risks.append(model.predict_proba(test_data)[0][1] * 100)
+            # Align columns to model's expected features, fill missing with 0, drop extras
+            if hasattr(model, 'feature_names_in_'):
+                for col in model.feature_names_in_:
+                    if col not in test_data.columns:
+                        test_data[col] = 0
+                test_data = test_data[[col for col in model.feature_names_in_]]
+            try:
+                risks.append(model.predict_proba(test_data)[0][1] * 100)
+            except Exception as e:
+                st.error(f"Risk graph error (age): {e}")
+                st.stop()
         fig_age = px.line(x=ages, y=risks, labels={'x': 'Age', 'y': 'Risk (%)'}, title='Risk vs Age', markers=True)
         fig_age.update_layout(paper_bgcolor="rgba(0,0,0,0)", font={'color': "white"})
         st.plotly_chart(fig_age, use_container_width=True)
@@ -137,7 +151,17 @@ with tab2:
         for c in chols:
             test_data = input_data.copy()
             test_data['chol'] = c
-            risks_chol.append(model.predict_proba(test_data)[0][1] * 100)
+            # Align columns to model's expected features, fill missing with 0, drop extras
+            if hasattr(model, 'feature_names_in_'):
+                for col in model.feature_names_in_:
+                    if col not in test_data.columns:
+                        test_data[col] = 0
+                test_data = test_data[[col for col in model.feature_names_in_]]
+            try:
+                risks_chol.append(model.predict_proba(test_data)[0][1] * 100)
+            except Exception as e:
+                st.error(f"Risk graph error (cholesterol): {e}")
+                st.stop()
         fig_chol = px.line(x=chols, y=risks_chol, labels={'x': 'Cholesterol', 'y': 'Risk (%)'}, title='Risk vs Cholesterol', markers=True)
         fig_chol.update_layout(paper_bgcolor="rgba(0,0,0,0)", font={'color': "white"})
         st.plotly_chart(fig_chol, use_container_width=True)

@@ -9,22 +9,6 @@ model = joblib.load('myocore_pipeline.pkl')
 
 st.title('Myo-Sim Bio-Deck — Chronos Time-Travel Interface')
 
-# Feature input widgets
-age = st.slider('Age', 18, 100, 45)
-sys_bp = st.slider('Systolic BP', 80, 220, 130)
-dia_bp = st.slider('Diastolic BP', 40, 130, 80)
-cholesterol = st.slider('Cholesterol', 50, 600, 200, step=5)
-weight = st.slider('Weight (kg)', 30, 200, 75)
-height = st.slider('Height (cm)', 100, 220, 170)
-smoker = st.checkbox('Smoker', value=False)
-active = st.checkbox('Active', value=True)
-years_ahead = st.slider('⏳ Years Ahead', 0, 20, 0)
-
-# Derived features
-sim_age = age + years_ahead
-bmi = weight / ((height / 100) ** 2) if height > 0 else 0
-pulse_pressure = sys_bp - dia_bp
-
 # Feature order (update to match your model's training columns)
 feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
 

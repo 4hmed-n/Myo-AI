@@ -26,19 +26,37 @@ bmi = weight / ((height / 100) ** 2) if height > 0 else 0
 pulse_pressure = sys_bp - dia_bp
 
 # Feature order (update to match your model's training columns)
-feature_names = ['age', 'ap_hi', 'ap_lo', 'cholesterol', 'weight', 'height', 'bmi', 'pulse_pressure', 'smoke', 'active', 'sensor_signal_available']
+feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+
+# Streamlit widgets for each feature
+age = st.slider('Age', 18, 100, 45)
+sex = st.selectbox('Sex', [0, 1], format_func=lambda x: 'Male' if x == 1 else 'Female')
+cp = st.slider('Chest Pain Type (cp)', 0, 3, 0)
+trestbps = st.slider('Resting Blood Pressure (trestbps)', 80, 200, 120)
+chol = st.slider('Cholesterol (chol)', 100, 600, 200)
+fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+restecg = st.slider('Resting ECG (restecg)', 0, 2, 1)
+thalach = st.slider('Max Heart Rate (thalach)', 60, 220, 150)
+exang = st.selectbox('Exercise Induced Angina (exang)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+oldpeak = st.slider('ST Depression (oldpeak)', 0.0, 6.0, 1.0, step=0.1)
+slope = st.slider('Slope of ST (slope)', 0, 2, 1)
+ca = st.slider('Number of Major Vessels (ca)', 0, 4, 0)
+thal = st.slider('Thalassemia (thal)', 0, 3, 1)
+
 patient = {
-    'age': sim_age,
-    'ap_hi': sys_bp,
-    'ap_lo': dia_bp,
-    'cholesterol': cholesterol,
-    'weight': weight,
-    'height': height,
-    'bmi': bmi,
-    'pulse_pressure': pulse_pressure,
-    'smoke': int(smoker),
-    'active': int(active),
-    'sensor_signal_available': 0
+    'age': age,
+    'sex': sex,
+    'cp': cp,
+    'trestbps': trestbps,
+    'chol': chol,
+    'fbs': fbs,
+    'restecg': restecg,
+    'thalach': thalach,
+    'exang': exang,
+    'oldpeak': oldpeak,
+    'slope': slope,
+    'ca': ca,
+    'thal': thal
 }
 
 input_df = pd.DataFrame([patient], columns=feature_names)

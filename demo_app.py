@@ -24,7 +24,7 @@ col1, col2 = st.columns([1,2])
 
 with col1:
     st.markdown('<div class="section-title">Patient Vitals</div>', unsafe_allow_html=True)
-    age = st.slider('Age (years in future)', 0, 20, 0)
+    age = st.slider('Age (years)', 18, 100, 30)
     sex = st.selectbox('Sex', [0, 1], format_func=lambda x: 'Male' if x == 1 else 'Female')
     trestbps = st.slider('Systolic Blood Pressure (mmHg)', 80, 200, 120)
     chol = st.slider('Cholesterol (mg/dL)', 100, 600, 200)

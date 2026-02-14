@@ -1,10 +1,9 @@
 import streamlit as st
-import pickle
+import joblib
 import numpy as np
 
 # Load the trained model
-with open('myocore_pipeline.pkl', 'rb') as f:
-    model = pickle.load(f)
+model = joblib.load('myocore_pipeline.pkl')
 
 st.title('ECG Patient Outcome Predictor')
 

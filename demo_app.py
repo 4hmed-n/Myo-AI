@@ -37,6 +37,9 @@ with col1:
     slope = st.slider('Slope of ST (slope)', 0, 2, 1)
     ca = st.slider('Number of Major Vessels (ca)', 0, 4, 0)
     thal = st.slider('Thalassemia (thal)', 0, 3, 1)
+    height = st.slider('Height (cm)', 100, 220, 170)
+    weight = st.slider('Weight (kg)', 30, 200, 75)
+    dia_bp = st.slider('Diastolic BP (dia_bp)', 40, 130, 80)
     st.markdown('<div class="section-title">Prediction</div>', unsafe_allow_html=True)
     predict_btn = st.button('Predict', use_container_width=True)
 

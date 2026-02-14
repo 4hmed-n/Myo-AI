@@ -36,7 +36,7 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 ![Confusion Matrix](https://github.com/4hmed-n/Myo-AI/blob/main/assets/CF.png?raw=true)
 
 ### Unsupervised Risk Stratification (The Zenith Map)
-*PCA + K-Means clustering identifying distinct "Risk Phenotypes" (Low/Medium/High) entirely unsupervised. This proves the model is finding real patterns, not just memorizing labels.*
+*PCA + K-Means clustering identifying distinct "Risk Phenotypes" (Low/Medium/High) entirely unsupervised.*
 ![Zenith Map](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Scatter%20Plot.png?raw=true)
 
 ---
@@ -46,6 +46,16 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 ### Global Risk Drivers (Beeswarm Plot)
 *Shows the directionality of risk. High Blood Pressure (Red) pushes risk to the right (positive), while Physical Activity (Blue) lowers it.*
 ![Beeswarm Plot](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Beeswarm%20SHAP.png?raw=true)
+
+### Feature Magnitude (Mean SHAP)
+*A consolidated ranking of feature importance by absolute impact, providing a 'consensus' view of what drives the Aegis Protocol's decisions.*
+![Mean SHAP](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Mean%20SHAP%20FI.png?raw=true)
+
+
+### Statistical Significance (Power SHAP)
+*Using PowerSHAP to filter out noise. This ensures every feature utilized by Myo AI has a predictive power significantly higher than a random uniform distribution.*
+![Power SHAP](https://github.com/4hmed-n/Myo-AI/blob/main/assets/Power%20SHAP.png?raw=true)
+
 
 ### Permutation Importance
 *Ranking features by how much the model degrades when they are shuffled. Systolic BP (`ap_hi`) is the #1 predictor.*
@@ -67,6 +77,7 @@ Click the badge below to run the full pipeline, witness the model tournament, an
 
 ### **Intelligence & UI**
 * **SHAP (Oracle Layer):** Game-theoretic feature explainability.
+* **PowerSHAP:** Feature selection via statistical shadow variables.
 * **IPyWidgets (Bio-Deck):** Interactive real-time risk simulation.
 * **Matplotlib & Seaborn:** Diagnostic visualizations.
 

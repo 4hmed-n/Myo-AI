@@ -12,20 +12,37 @@ st.title('Myo-Sim Bio-Deck — Chronos Time-Travel Interface')
 # Feature order (update to match your model's training columns)
 feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
 
-# Streamlit widgets for each feature
-age = st.slider('Age', 18, 100, 45)
-sex = st.selectbox('Sex', [0, 1], format_func=lambda x: 'Male' if x == 1 else 'Female')
-cp = st.slider('Chest Pain Type (cp)', 0, 3, 0)
-trestbps = st.slider('Resting Blood Pressure (trestbps)', 80, 200, 120)
-chol = st.slider('Cholesterol (chol)', 100, 600, 200)
-fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-restecg = st.slider('Resting ECG (restecg)', 0, 2, 1)
-thalach = st.slider('Max Heart Rate (thalach)', 60, 220, 150)
-exang = st.selectbox('Exercise Induced Angina (exang)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-oldpeak = st.slider('ST Depression (oldpeak)', 0.0, 6.0, 1.0, step=0.1)
-slope = st.slider('Slope of ST (slope)', 0, 2, 1)
-ca = st.slider('Number of Major Vessels (ca)', 0, 4, 0)
-thal = st.slider('Thalassemia (thal)', 0, 3, 1)
+# --- Professional Layout ---
+st.markdown("""
+<style>
+.big-font {font-size:28px !important; font-weight:bold; color:#2c3e50;}
+.section-title {font-size:20px !important; font-weight:bold; color:#2980b9; margin-top: 1em;}
+</style>
+""", unsafe_allow_html=True)
+
+col1, col2 = st.columns([1,2])
+
+with col1:
+    st.markdown('<div class="section-title">Patient Vitals</div>', unsafe_allow_html=True)
+    age = st.slider('Age', 18, 100, 45)
+    sex = st.selectbox('Sex', [0, 1], format_func=lambda x: 'Male' if x == 1 else 'Female')
+    cp = st.slider('Chest Pain Type (cp)', 0, 3, 0)
+    trestbps = st.slider('Resting Blood Pressure (trestbps)', 80, 200, 120)
+    chol = st.slider('Cholesterol (chol)', 100, 600, 200)
+    fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+    restecg = st.slider('Resting ECG (restecg)', 0, 2, 1)
+    thalach = st.slider('Max Heart Rate (thalach)', 60, 220, 150)
+    exang = st.selectbox('Exercise Induced Angina (exang)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
+    oldpeak = st.slider('ST Depression (oldpeak)', 0.0, 6.0, 1.0, step=0.1)
+    slope = st.slider('Slope of ST (slope)', 0, 2, 1)
+    ca = st.slider('Number of Major Vessels (ca)', 0, 4, 0)
+    thal = st.slider('Thalassemia (thal)', 0, 3, 1)
+    st.markdown('<div class="section-title">Prediction</div>', unsafe_allow_html=True)
+    predict_btn = st.button('Predict', use_container_width=True)
+
+with col2:
+    st.markdown('<div class="big-font">Chronos Time-Travel Risk Dashboard</div>', unsafe_allow_html=True)
+    st.image("https://images.unsplash.com/photo-1511174511562-5f97f2b2e2b9?auto=format&fit=crop&w=800&q=80", use_column_width=True)
 
 patient = {
     'age': age,
@@ -50,9 +67,9 @@ if st.button('Predict'):
     status = 'HIGH RISK' if prob > 0.5 else 'LOW RISK'
     status_color = '#e74c3c' if prob > 0.5 else '#2ecc71'
     st.markdown(f"### CVD Probability: <span style='color:{status_color}'>{prob:.1%}</span> — <span style='color:{status_color}'>{status}</span>", unsafe_allow_html=True)
-    st.write(f"Simulated Age: {sim_age}")
-    st.write(f"BMI: {bmi:.1f}")
-    st.write(f"Pulse Pressure: {pulse_pressure} mmHg")
+    st.write(f"Simulated Age: {age}")
+    st.write(f"BMI: {weight / ((height / 100) ** 2):.1f}")
+    st.write(f"Pulse Pressure: {trestbps - dia_bp} mmHg")
 
     # Gauge chart
     fig = go.Figure(go.Indicator(

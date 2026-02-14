@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 # Load the trained model
 model = joblib.load('myocore_pipeline.pkl')
 
-st.title('Myo-Sim Bio-Deck — Chronos Time-Travel Interface')
+st.title('Myo-AI Patient Simulator')
 
 # Feature order (update to match your model's training columns)
 feature_names = ['age', 'sex', 'trestbps', 'chol', 'smoke', 'weight', 'height']
@@ -36,7 +36,7 @@ with col1:
     predict_btn = st.button('Predict', use_container_width=True)
 
 with col2:
-    st.markdown('<div class="big-font">Chronos Time-Travel Risk Dashboard</div>', unsafe_allow_html=True)
+    st.markdown('<div class="big-font">MYO-AI Dashboard</div>', unsafe_allow_html=True)
     st.image("https://images.unsplash.com/photo-1511174511562-5f97f2b2e2b9?auto=format&fit=crop&w=800&q=80", use_column_width=True)
 
 patient = {

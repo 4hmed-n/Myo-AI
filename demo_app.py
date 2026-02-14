@@ -31,6 +31,7 @@ with col1:
     smoke = st.selectbox('Smoker', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
     weight = st.slider('Weight (kg)', 30, 200, 75)
     height = st.slider('Height (cm)', 100, 220, 170)
+    dia_bp = st.slider('Diastolic Blood Pressure (mmHg)', 40, 130, 80)
     st.markdown('<div class="section-title">Prediction</div>', unsafe_allow_html=True)
     predict_btn = st.button('Predict', use_container_width=True)
 

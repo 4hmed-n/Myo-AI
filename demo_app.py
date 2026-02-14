@@ -10,7 +10,7 @@ model = joblib.load('myocore_pipeline.pkl')
 st.title('Myo-Sim Bio-Deck — Chronos Time-Travel Interface')
 
 # Feature order (update to match your model's training columns)
-feature_names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal']
+feature_names = ['age', 'sex', 'trestbps', 'chol', 'smoke', 'weight', 'height']
 
 # --- Professional Layout ---
 st.markdown("""
@@ -24,22 +24,13 @@ col1, col2 = st.columns([1,2])
 
 with col1:
     st.markdown('<div class="section-title">Patient Vitals</div>', unsafe_allow_html=True)
-    age = st.slider('Age', 18, 100, 45)
+    age = st.slider('Age (years in future)', 0, 20, 0)
     sex = st.selectbox('Sex', [0, 1], format_func=lambda x: 'Male' if x == 1 else 'Female')
-    cp = st.slider('Chest Pain Type (cp)', 0, 3, 0)
-    trestbps = st.slider('Resting Blood Pressure (trestbps)', 80, 200, 120)
-    chol = st.slider('Cholesterol (chol)', 100, 600, 200)
-    fbs = st.selectbox('Fasting Blood Sugar > 120 mg/dl (fbs)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-    restecg = st.slider('Resting ECG (restecg)', 0, 2, 1)
-    thalach = st.slider('Max Heart Rate (thalach)', 60, 220, 150)
-    exang = st.selectbox('Exercise Induced Angina (exang)', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
-    oldpeak = st.slider('ST Depression (oldpeak)', 0.0, 6.0, 1.0, step=0.1)
-    slope = st.slider('Slope of ST (slope)', 0, 2, 1)
-    ca = st.slider('Number of Major Vessels (ca)', 0, 4, 0)
-    thal = st.slider('Thalassemia (thal)', 0, 3, 1)
-    height = st.slider('Height (cm)', 100, 220, 170)
+    trestbps = st.slider('Systolic Blood Pressure (mmHg)', 80, 200, 120)
+    chol = st.slider('Cholesterol (mg/dL)', 100, 600, 200)
+    smoke = st.selectbox('Smoker', [0, 1], format_func=lambda x: 'Yes' if x == 1 else 'No')
     weight = st.slider('Weight (kg)', 30, 200, 75)
-    dia_bp = st.slider('Diastolic BP (dia_bp)', 40, 130, 80)
+    height = st.slider('Height (cm)', 100, 220, 170)
     st.markdown('<div class="section-title">Prediction</div>', unsafe_allow_html=True)
     predict_btn = st.button('Predict', use_container_width=True)
 
@@ -50,17 +41,11 @@ with col2:
 patient = {
     'age': age,
     'sex': sex,
-    'cp': cp,
     'trestbps': trestbps,
     'chol': chol,
-    'fbs': fbs,
-    'restecg': restecg,
-    'thalach': thalach,
-    'exang': exang,
-    'oldpeak': oldpeak,
-    'slope': slope,
-    'ca': ca,
-    'thal': thal
+    'smoke': smoke,
+    'weight': weight,
+    'height': height
 }
 
 input_df = pd.DataFrame([patient], columns=feature_names)
